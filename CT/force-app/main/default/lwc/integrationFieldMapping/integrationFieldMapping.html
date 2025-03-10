@@ -1,0 +1,157 @@
+<template>
+    <div class="slds-var-p-around_medium">
+        <!-- Header with Back Button -->
+        <div class="slds-grid slds-gutters slds-var-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-12">
+                <lightning-button
+                    label="Back"
+                    icon-name="utility:back"
+                    onclick={handleBack}
+                    variant="neutral">
+                </lightning-button>
+            </div>
+            <div class="slds-col slds-size_11-of-12">
+                <h1 class="slds-text-heading_medium">
+                    Field Mapping - {sourceEntity} to {targetEntity}
+                </h1>
+            </div>
+        </div>
+
+        <!-- Help Text -->
+        <div class="slds-box slds-theme_info slds-var-m-bottom_medium">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p>Map source fields to target fields. The identifier field is mandatory and must be mapped.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mandatory Fields Section -->
+        <div class="slds-box slds-theme_shade slds-var-m-bottom_medium">
+            <div class="slds-text-heading_small slds-var-m-bottom_small">
+                Required Mapping
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-text-title slds-var-p-bottom_x-small">Target Field</div>
+                    <div class="slds-text-body_regular slds-var-p-vertical_small">
+                        <lightning-icon icon-name="utility:lock" size="xx-small" class="slds-var-m-right_x-small"></lightning-icon>
+                        customer_id
+                    </div>
+                </div>
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-text-title slds-var-p-bottom_x-small">Source Field</div>
+                    <lightning-combobox
+                        name="mandatoryField"
+                        value={mandatoryFieldMapping.customer_id}
+                        options={sourceFields}
+                        onchange={handleMandatoryFieldChange}
+                        required>
+                    </lightning-combobox>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Fields Section -->
+        <div class="slds-box">
+            <div class="slds-grid slds-gutters slds-var-m-bottom_small">
+                <div class="slds-col">
+                    <div class="slds-text-heading_small">Additional Fields</div>
+                </div>
+                <div class="slds-col slds-text-align_right">
+                    <lightning-button
+                        label="Add Field"
+                        onclick={handleAddField}
+                        icon-name="utility:add"
+                        variant="neutral">
+                    </lightning-button>
+                </div>
+            </div>
+
+            <!-- Field Headers -->
+            <div class="slds-grid slds-gutters slds-var-m-bottom_x-small slds-text-title_caps">
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-text-color_weak">Target Field</div>
+                </div>
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-text-color_weak">Source Field</div>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <div class="slds-text-color_weak">Data Type</div>
+                </div>
+                <div class="slds-col slds-size_1-of-12">
+                    <div class="slds-text-color_weak">Action</div>
+                </div>
+            </div>
+
+            <!-- Mapping Fields -->
+            <template for:each={additionalMappings} for:item="mapping" for:index="index">
+                <div key={mapping.id} class="slds-grid slds-gutters slds-var-m-bottom_x-small">
+                    <div class="slds-col slds-size_4-of-12">
+                        <lightning-input
+                            type="text"
+                            value={mapping.targetField}
+                            onchange={handleTargetFieldChange}
+                            data-index={index}
+                            placeholder="Enter target field name"
+                            class="field-input">
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_4-of-12">
+                        <lightning-combobox
+                            value={mapping.sourceField}
+                            options={sourceFields}
+                            onchange={handleSourceFieldChange}
+                            data-index={index}
+                            placeholder="Select source field">
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                        <lightning-combobox
+                            value={mapping.dataType}
+                            options={dataTypeOptions}
+                            onchange={handleDataTypeChange}
+                            data-index={index}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12 slds-align-middle">
+                        <lightning-button-icon
+                            icon-name="utility:delete"
+                            alternative-text="Delete"
+                            data-index={index}
+                            onclick={handleDeleteMapping}
+                            class="slds-var-m-top_x-small">
+                        </lightning-button-icon>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:true={showEmptyState}>
+                <div class="slds-illustration slds-illustration_small slds-var-m-top_medium">
+                    <div class="slds-text-longform slds-text-align_center">
+                        <h3 class="slds-text-heading_small">No additional fields mapped</h3>
+                        <p class="slds-text-body_regular">Click "Add Field" to map additional fields</p>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="slds-var-m-top_medium slds-text-align_right">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}
+                class="slds-var-m-right_small">
+            </lightning-button>
+            <lightning-button
+                label="Save"
+                variant="brand"
+                onclick={handleSave}>
+            </lightning-button>
+        </div>
+    </div>
+</template>
